@@ -52,7 +52,6 @@ function start() {
             }
 
             addorView(value);
-            // connection.end();
         });
 };
 
@@ -74,11 +73,11 @@ function addorView(value) {
         .then(function(answer) {
             if (answer.addOrView === choices[0]) {
                 if (value === "department") {
-                    getDepartInfo();
+                    addingInfo("department");
                 } else if (value === "role") {
-                    getRoleInfo();
+                    addingInfo("role");
                 } else {
-                    getEmployeeInfo();
+                    addingInfo("employee");
                 }
             } else if (answer.addOrView === choices[1]) {
                 console.log(value);
@@ -92,36 +91,22 @@ function addorView(value) {
             } else if (answer.addOrView === choices[2]) {
                 updateRoleInfo();
             } else {
-                // connection.end();
+                connection.end();
             }
             start();
         });
 };
 
-function getDepartInfo() {
-    runPrompt({
+function addingInfo(value) {
+    let questions;
+    if (value === "department") {
+        questions = {
             name: "name",
             type: "input",
             message: "What is the department name?",
-        })
-        .then(function(answer) {
-            connection.query(
-                "INSERT INTO department SET ?", {
-                    name: answer.name,
-                },
-                function(err) {
-                    if (err) throw err;
-                    else {
-                        start();
-                    }
-                }
-            );
-        });
-};
-
-
-function getRoleInfo() {
-    runPrompt([{
+        };
+    } else if (value === "role") {
+        questions = [{
             name: "title",
             type: "input",
             message: "What is the title?",
@@ -133,21 +118,9 @@ function getRoleInfo() {
             name: "departmentName",
             type: "input",
             message: "Which department you want to assign to ?",
-        }])
-        .then(function(answer) {
-            connection.query(
-                "INSERT INTO role SET ?", {
-                    title: answer.title,
-                    salary: answer.salary,
-                    departmentName: answer.departmentName
-                },
-                function(err) { if (err) throw err; }
-            );
-        });
-};
-
-function getEmployeeInfo() {
-    runPrompt([{
+        }];
+    } else {
+        questions = [{
             name: "firstname",
             type: "input",
             message: "What is the first name?",
@@ -163,16 +136,39 @@ function getEmployeeInfo() {
             name: "position",
             type: "input",
             message: "Which department you want to assign to ?",
-        }])
+        }];
+    }
+
+    runPrompt(questions)
         .then(function(answer) {
-            connection.query(
-                "INSERT INTO employee SET ?", {
+            let neededData;
+            if (value === "department") {
+                neededData = {
+                    name: answer.name,
+                };
+            } else if (value === "role") {
+                neededData = {
+                    title: answer.title,
+                    salary: answer.salary,
+                    departmentName: answer.departmentName
+                };
+            } else {
+                neededData = {
                     firstname: answer.firstname,
                     lastname: answer.lastname,
                     position: answer.position,
                     manager: answer.manager
-                },
-                function(err) { if (err) throw err; }
+                };
+            }
+
+            connection.query(
+                `INSERT INTO ${value} SET ?`, neededData,
+                function(err) {
+                    if (err) throw err;
+                    else {
+                        start();
+                    }
+                }
             );
         });
 };
