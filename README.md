@@ -9,7 +9,7 @@ This is a command-line application that allows the employer to add, view and upd
 ## Technology
 - CLI
 - Javascript
-- Node
+- Node, Inquirer.js
 - MySQL
 
 ## License
