@@ -3,6 +3,9 @@
 ## About
 This is a command-line application that allows the employer to add, view and update departments, roles and employees informations. 
 
+## Application ScreenShot
+![10-employeeCli](https://user-images.githubusercontent.com/56613553/74096166-bfc8b700-4ac0-11ea-9938-0479d7d4ec3f.png)
+
 ## Contributors
 [Michael Robil](https://github.com/michaelrobil)
 
